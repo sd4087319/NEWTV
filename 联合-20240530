@@ -1,0 +1,1193 @@
+import io
+import sys
+import csv
+# 改变标准输出的默认编码
+# sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+print_ = print
+def my_print(*args, **kwargs):
+    if 'flush' not in kwargs:
+        kwargs['flush'] = True
+    print_(*args, **kwargs)
+print = my_print
+flush = True
+
+from bs4 import BeautifulSoup    #解析HTML响应
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+import urllib.request
+import urllib.parse
+session = requests.Session()
+import re
+import os
+import time
+import winsound#播放WINDWOS自带的音乐
+# from win32com.client import Dispatch
+# import win32gui,win32api,win32con
+# thunder = Dispatch('ThunderAgent.Agent64.1')
+import sqlite3
+import datetime
+import traceback
+import cv2
+import random
+from urllib.parse import quote
+import pandas as pd
+import openpyxl
+
+
+
+from urllib import request
+
+
+#做一个时间
+today=datetime.date.today()
+if today.year==2024:
+    pass
+else:
+    exit()
+    print("执行")
+
+
+
+
+#这里做了个登陆界面
+def landing():
+    global headers
+    f = open(r'\\172.20.49.25\未来程序$\cookie1.txt')
+    s=f.read()
+    f.close() 
+    headers = {
+        # 'Cookie':'JSESSIONID={}'.format(s),
+        'Cookie':'SESSION={}'.format(s),
+
+        # 'Cookie':'SESSION=ZGM1YjVmMTctYjc0Ni00ODg3LTg3NzUtNDFiYjQ3MTQxZWE5',
+        'Host':'ucas.ottcn.com:9001',
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0',
+        'Content-Type': 'application/json;charset=UTF-8'
+    }
+
+    wbdata = session.get("http://ucas.ottcn.com:9001/audit/appTypeCount?collection=audit_now",headers=headers)  #, auth=('matianyi@staff.cntv.cn','matianyi111'
+    # print(wbdata)
+    c= wbdata.json()
+    # print(c)
+    #print(c['body'])
+    #print(c['body'][0]['mid'])
+    if c['body']=="用户未登录或用户登录超时":
+        print("登陆失败")
+    else:
+        print("登陆成功")
+
+landing()
+
+#链接是否可以打开
+def openlink(soup8):
+    print(soup8)
+    global openyesorno
+    try:
+        with request.urlopen(soup8,timeout=10) as file:
+            print(file.reason)
+            if file.reason=="OK":
+                print("第一次-可以打开")
+                openyesorno="可以打开"
+
+            else:
+                print("无法播放，重试")
+                zhmodel = re.compile(u'[\u4e00-\u9fa5]')  #检查中文
+                match = zhmodel.search(soup8)
+                if match:
+                    f = quote(soup8)
+                    soup8=f.replace("%3A", ":")
+                    with request.urlopen(soup8,timeout=10) as file:
+                        if file.reason=="OK":
+                            openyesorno="有中文-可以打开"
+                            print("有中文-可以打")
+                        else:
+                            openyesorno="有中文-无法打开"
+                            print("有中文-无法打开")
+                else:
+                    openyesorno="无中文-无法打开"
+    except:
+        openyesorno="出错-无法打开"
+        print("出错-无法打开")
+
+#清空整个表，不执行
+def sqlthree():
+    db_name = r'统一下载.db'
+    #表名
+    table_name = "统一下载"
+    conn = sqlite3.connect(db_name)
+    rs = conn.cursor()
+    #rs.execute('drop table cms') #删除单个表
+    rs.execute('delete from ottcn') #清空单个表
+    conn.commit()
+    conn.close()
+
+# sqlthree() 这里不做每次清空数据库了，而是查询数据库，如果能查到，就不入库了
+
+
+
+#这里做了一个日期，当天的日期，省得自个再手打
+a = datetime.date.today()#年月日
+b=datetime.datetime.now()#时分秒
+
+# today_1=str(a.year) + "/" + str(a.month)+ "/"  + str(a.day) + "/"  + str(b.hour)    #本来想做一个按小时删数据，现在没用了
+today_1=str(a.year) + "/" + str(a.month)+ "/"  + str(a.day)
+print(today_1)
+
+
+
+
+
+#这里是对应的通过数据与驳回数据，现在想要把ok.py文件放在公盘
+import ok
+# ok.path.append('\\\\172.20.49.25\\未来程序\\ok.py')
+import no
+# no.path.append(r'\\172.20.49.25\未来程序\no.py')
+
+
+#这里是通过数据
+ok_jmj = ok.list
+
+#这里是驳回数据
+ok_jmj_no = no.list
+
+
+#如果ok_jmj ok_jmj_no 有仅空格内容会出错，但是也没必要做个遍历吧
+# for xx in ok_jmj:
+#     if xx[0] in "专访叶璇：追我男友的人太多 我们要生五六个小孩":
+#         print(xx)
+#         print("出错出错")
+
+
+#这是抓取
+def grab(cp,copyright):
+    try:       
+        for y in range(1,2000):
+            try:
+
+                import time
+                time.sleep(1)
+                data_list2=[]
+                print("第",y,"开始")
+
+                #待审界面
+                if shurun== "5":
+                    wbdata = requests.get("http://ucas.ottcn.com:9001/es/task?productionLineId=&productionId=&appId={}&id=&auditType=&isMachine=0&userId=9&emptyCover=1&flag=0&type=program&machineStatus=&dataFlag=0&kind={}&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&keyword=&pageSize=100&currentPage={}".format(cp,copyright,y),headers=headers)
+                else:
+                    # wbdata = requests.get("http://ucas.ottcn.com:9001/es/task?appId={}&id=&auditType=&isMachine=0&userId=9&emptyCover=0&flag=0&type=program&machineStatus=&dataFlag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&keyword=&pageSize=100&currentPage={}".format(cp,y),headers=headers)
+                    wbdata = requests.get("http://ucas.ottcn.com:9001/es/task?productionLineId=&productionId=&appIds={}&id=&auditType=&isMachine=0&userId=49&emptyCover=0&flag=0&type=program&machineStatus=&dataFlag=0&kinds=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&keyword=&pageSize=100&currentPage={}&catalogMachineStatuses=&videoIntoAuditStatuses=".format(cp,y),headers=headers)
+
+                wbdata= wbdata.json()
+                print(wbdata['message'])
+
+                if wbdata['message']=="查询失败":
+                    #跳过下面的所有，开始上面的新的循环
+                    continue
+                
+                #计算出抓取了多少条节目
+                xulie=len(wbdata['body'])
+                print(xulie)
+
+
+
+
+                if xulie>0:
+                    print("第",y,"页有数据")
+                    for jiemu in range(0,xulie):
+
+                        #print(jiemu)
+                        soupx=str(wbdata['body'][jiemu])#是在这里做了一个序例 jiemu这个不就是一个序例嘛，0 1 2 3 ，第一条，第二条
+                        # print(soupx)
+
+                        data_list1=[]
+
+                        #平台0
+                        cpchina=re.findall(r"'appName': '(.*?)',",soupx)
+                        if not any(cpchina):
+                            cpchina=re.findall(r"'版权方', 'type': 'text', 'content': '(.+?)'",soupx)
+                        cpchina= ''.join(cpchina)
+                        print(cpchina)
+                        data_list1.append(cpchina)
+
+                        #第三种，删除所有非中文，非英文，非数据的内容
+                        r='[^0-9a-zA-Z\u4e00-\u9fa5]'
+                        
+
+                        #节目标题1 所有的抓取都有一个问题，就是当有二个空值，判断
+                        soup1=re.findall(r"'programName': '(.*?)',",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"'programName': '(.*?)',",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"'programName': \"(.*?)\",",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"'title': '(.*?)',",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"'title': \"(.*?)\",",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"名称', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"名称', 'type': 'text', 'content': \"(.*?)\"}",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"'资源描述', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        if not any(soup1):
+                            soup1=re.findall(r"'歌名', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        #这里把WINDOWS不让重命名的符号给删了。   &nbsp; 
+                        if any(soup1):
+                            soup1= ''.join(soup1[0])
+                            # soup1 = re.sub(r'‧|<|>|/|\\|\||:|\*|\?|\"|\'|•|ê|nbsp|&|;',"", soup1)
+                            #第三种，删除所有非中文，非英文，非数据的内容
+                            # r='[^0-9a-zA-Z\u4e00-\u9fa5]'                           
+                            # soup1 = re.sub(r,"", soup1) 
+                            #第四种，下载的时候可以把符号删光，但是导入数据库只要把引号删了就行了。
+                            # soup1 = re.sub(r'\"|\'',"", soup1)
+                        else:
+                            soup1="无"
+                        # print(soup1)
+                        data_list1.append(soup1)
+
+
+
+
+
+
+
+                        #节目集标题2
+                        soup2=re.findall(r"集名称', 'type': 'text', 'content': '(.*?)'",soupx)
+                        if not any(soup2):
+                            soup2=re.findall(r"'programSetName': '(.*?)',",soupx)
+                        if any(soup2):
+                            soup2= ''.join(soup2[0])
+                            #这个添添太麻烦了，这是第一种方式
+                            # soup2 = re.sub(r'‧|<|>|/|\\|\||:|\*|\?|\"|\'|•|ê|nbsp|&|;',"",  soup2)  
+                            #后来发现，这个也挺麻烦的，这是第二种方式
+                            # r='[’!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~・‧•ê&;]+'
+                            # soup2 = re.sub(r,"", soup2)              
+                            #第三种，删除所有非中文，非英文，非数据的内容
+                            # soup2 = re.sub(r,"", soup2) 
+                            #第四种，下载的时候可以把符号删光，但是导入数据库只要把引号删了就行了。
+                            # soup2 = re.sub(r'\"|\'',"", soup2)
+                        else:
+                            soup2="节目集无"
+
+
+                        #这里做一下节目集空格与季的替换
+                        soup2_ji = soup2
+                        soup2_ji = soup2_ji.replace(" ", "")  
+                        soup2_ji = soup2_ji.replace("第一季", "")  
+                        soup2_ji = soup2_ji.replace("第二季", "第2季")  
+                        soup2_ji = soup2_ji.replace("第三季", "第3季")  
+                        soup2_ji = soup2_ji.replace("第四季", "第4季")  
+                        soup2_ji = soup2_ji.replace("第五季", "第5季")  
+                        soup2_ji = soup2_ji.replace("第六季", "第6季")  
+                        soup2_ji = soup2_ji.replace("第七季", "第7季")  
+                        soup2_ji = soup2_ji.replace("第八季", "第8季")  
+                        soup2_ji = soup2_ji.replace("第九季", "第9季")  
+                        soup2_ji = soup2_ji.replace("第十季", "第10季")  
+                        soup2_ji = soup2_ji.replace("第十一季", "第11季")  
+                        soup2_ji = soup2_ji.replace("第十二季", "第12季")  
+                        soup2_ji = soup2_ji.replace("第十三季", "第13季")  
+                        soup2_ji = soup2_ji.replace("第十四季", "第14季")  
+                        soup2_ji = soup2_ji.replace("第十五季", "第15季")  
+                        soup2_ji = soup2_ji.replace("第十六季", "第16季")  
+                        soup2_ji = soup2_ji.replace("第十七季", "第17季")  
+                        soup2_ji = soup2_ji.replace("第十八季", "第18季")  
+                        soup2_ji = soup2_ji.replace("第十九季", "第19季")  
+                        soup2_ji = soup2_ji.replace("第二十季", "第20季")  
+                        soup2_ji = soup2_ji.replace("第二十一季", "第21季")  
+                        soup2_ji = soup2_ji.replace("第二十二季", "第22季")  
+                        soup2_ji = soup2_ji.replace("第二十三季", "第23季")  
+                        soup2_ji = soup2_ji.replace("第二十四季", "第24季")  
+                        soup2_ji = soup2_ji.replace("第二十五季", "第25季")  
+                        soup2_ji = soup2_ji.replace("第二十六季", "第26季")  
+                        soup2_ji = soup2_ji.replace("第二十七季", "第27季")  
+                        soup2_ji = soup2_ji.replace("第二十八季", "第28季")  
+                        soup2_ji = soup2_ji.replace("第二十九季", "第29季")  
+
+
+
+                        #这里做标准化标题,就是节目集+节目
+                        def extract_numbers_from_title(title): 
+                            numbers = re.findall(r'\d+', title)  # 查找所有数字  
+                            return [int(n) for n in numbers]  # 将字符串转换为整数  
+
+
+                        soup1_numbers = extract_numbers_from_title(str(soup1))
+
+                        if any(soup1_numbers) and len(soup1_numbers) == 1 and soup2_ji !="节目集无":  #如果有数据且数据为1个
+                            # print(soup1_numbers[0])  # 输出: [2023, 123, 456]
+                            soup1_ccc = soup1_numbers[0]
+                            soup2_xxC = soup2_ji + "-" + str(soup1_ccc)
+                            #这边加一个统一标题，会有影响吗，这个加一个标准化标题
+                            data_list1.append(soup2_xxC)
+
+                        elif len(soup1_numbers) == 0 and soup2_ji !="节目集无" :
+                            soup1_ccc = str(soup1)
+                            soup2_xxC = soup2_ji + "-" + str(soup1_ccc)
+                            data_list1.append(soup2_xxC)
+
+                        
+                        else:
+                            data_list1.append(".")   
+
+
+                        # data_list1.append(".")
+
+
+
+
+
+                        #这里是节目集
+                        data_list1.append(soup2) 
+
+
+                        #编号ID 3
+
+                        if cp=="d561517e590f46d":
+                            soup3=re.findall(r"'id': '(.*?)',",soupx)
+
+
+                        else:
+
+                            soup3=re.findall(r"'视频id', 'type': 'text', 'content': '(.*?)'",soupx)
+                            if not any(soup3):
+                                soup3=re.findall(r"'id': '(.*?)',",soupx)
+                            if not any(soup3):
+                                soup3=re.findall(r"'vid': '(.*?)',",soupx)
+                        if any(soup3):
+                            soup3= ''.join(soup3[0])
+                        else:
+                            soup3="无"
+                            #这里要把要把重复的不要审的的ID放进去，腾讯超300秒的等比不审
+                        import listqq
+                        listqq=listqq.listqq2
+                        if soup3 in listqq:
+                            soup3="这个是要等比的，不审{}".format(soup3)              
+                        #如果不想手动设置单元格格式>分类>文本的话,只要在数字后+’\t’即可,这样就不会变科学计数了
+                        #腾讯的ID一直会有双引号和空格，用这个试试能不能清除，试过了不能清除
+                        # if cp=="5cb3f5c473562":
+                        #     soup3 = str(soup3 + '\t')
+                        #     soup3 = re.sub(r'\"',"", soup3)
+                        #     soup3 = soup3.rstrip()
+                        #     data_list1.append(soup3)
+                        # else:
+                        #     soup3 = str(soup3 + '\t')
+                        #     data_list1.append(soup3)
+
+                        #判断是否为纯数字，如果是纯数字，就加个\t，如果是数字加英文的就直接导出就行了
+                        if str(soup3).isdigit() and int(len(str(soup3)))>10 :
+                            data_list1.append(str(soup3 + '\t'))
+
+                        #判断首位是不是零，如果是零的话，只能加T，不然这个零自消失   
+                        elif str(soup3).startswith("0"):
+                            data_list1.append(str(soup3 + '\t'))
+                        else:
+                            data_list1.append(str(soup3))
+
+
+                        #视频类型4  
+                        soup4=re.findall(r"'一级分类', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        if not any(soup4):
+                            soup4=re.findall(r"'节目集类型', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        if not any(soup4):
+                            soup4=re.findall(r"'类型', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        if not any(soup4):
+                            soup4=re.findall(r"'type_name': '(.*?)',",soupx)
+                        if not any(soup4):
+                            soup4=re.findall(r"'topCategory': '(.*?)',",soupx)
+                        if not any(soup4):
+                            soup4="无"
+                        soup4= ''.join(soup4[0])
+                        data_list1.append(soup4) 
+
+
+                        #审核时间5
+                        #这边做一下腾讯的机审，后面不用了，都不审腾讯了
+                        # soup5=re.findall(r"许可证号：(.*?)},",soupx)
+                        # if not any(soup5):
+                        #     soup5="无"#这里不写无，是因为后面要做一个，判断节目与节目集
+                        # if any(soup5):
+                        #     soup5= ''.join(soup5[0])
+                        # else:
+                        #     soup5= ''.join(soup5)
+                        # print(soup5)
+                        # data_list1.append(soup5)
+                        data_list1.append("")  
+                        
+                        #这里开始查机审通过数据
+                        # wbdata_two = requests.get("http://ucas.ottcn.com:9001/audit/task?appId={}&id={}&userId=9&emptyCover=&flag=0&type=program&machineStatus=&dataFlag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&pageSize=10&currentPage=1".format(cp,soup3),headers=headers)
+                        # wbdata_two= wbdata_two.json()
+                        # wbdata_two= str(wbdata_two)
+                        # print(wbdata_two)
+                        
+
+                        #审核人6  待审里的审核人一般都是机审
+                        # soup6=re.findall(r"'manufacturer': '(.*?)',",wbdata_two)
+                        # soup6= ''.join(soup6)
+                        # # print(soup6)
+                        # if not any(soup6) or soup6=="0":
+                        #     data_list1.append("") 
+                        # else:
+                        #     data_list1.append(soup6)
+                        data_list1.append("")  
+
+
+                        #结果7  待审里的结果一般都是机审
+                        # soup7=re.findall(r"'machineStatus': '(.*?)',",wbdata_two)
+                        # soup7= ''.join(soup7)
+                        # # print(soup7)
+                        # if not any(soup7):
+                        #     data_list1.append("") 
+                        # elif soup7=="S":
+                        #     data_list1.append("通过")   
+                        # else:
+                        #     data_list1.append("")   
+                        data_list1.append("")  
+
+
+                        #理由里放节目链接8
+
+                        if cpchina=="舞动节拍":
+                            soup8=re.findall(r"'视频地址', 'type': 'text', 'content': '(.*?)'}",soupx)
+                            # print(soup8)
+                        else:
+                            soup8=re.findall(r"'播放地址', 'type': 'video', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'播放地址2', 'type': 'video', 'content': '(.*?)'}",soupx)                        
+                            if not any(soup8):
+                                soup8=re.findall(r"'文件地址', 'type': 'video', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'视频路径', 'type': 'video', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'节目视频', 'type': 'video', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'视频地址', 'type': 'page', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'播放网址', 'type': 'page', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'type': 'video', 'content': '(.*?)'}",soupx)
+                            if not any(soup8):
+                                soup8=re.findall(r"'videoURL': '(.*?)',",soupx)
+                            if not any(soup8):
+                                soup8=""#这里不写无，是因为后面要做一个，判断节目与节目集
+
+                        
+                        if any(soup8):
+                            soup8= ''.join(soup8[0])
+                        else:
+                            soup8= ''.join(soup8)
+                        data_list1.append(soup8)
+                        #看一下链接里有没有带MP4,(?i)是不区分大小写 这个现在不用看了
+                        soup8_1=re.search('(?i).mp4|.ogg|.m3u8',soup8)
+
+
+                        #片长9
+                        # soup9=re.findall(r"时长', 'type': 'text', 'content': '(.*?)'}",soupx)
+
+                        # '时长','sign':'chapterDurationNum','type':'text','content':'(.*?)'},
+                        # "sign":"duration","type":"text","content":"(.*?)"}
+                                            # "sign":"duration","type":"text","content":"75"}
+
+                        soup9=re.findall(r"'sign': 'duration', 'type': 'text', 'content': '(.*?)'}, ",soupx)
+                                           
+                        if not any(soup9):
+                            soup9=re.findall(r"'时长','sign':'chapterDurationNum','type':'text','content':'(.*?)'},",soupx)
+                        if not any(soup9):
+                            soup9=re.findall(r"'duration': '(.*?)',",soupx)     
+                        if not any(soup9):
+                            soup9=re.findall(r"'播放时长', 'type': 'text', 'content': '(.*?)'},",soupx)         
+
+         
+
+                        if not any(soup9):
+                            soup9=0#这里不写无，是因为后面要做一个，判断节目与节目集
+                        if soup9:
+                            soup9= ''.join(soup9[0])
+                        else:
+                            soup9= soup9
+                        data_list1.append(soup9) 
+
+                        #复审人10
+                        data_list1.append("") 
+
+                        #分级，这个用一个用原链接
+                        data_list1.append("")           
+                        
+                        # #标签18
+                        # if cp=="5cb3f5c473562" :#NewTV腾讯
+                        #     soup12=re.findall(r"'标签', 'type': 'text', 'content': '(.*?)'}",soupx)
+                        #     soup12= ''.join(soup12)
+                        #     data_list1.append(soup12) 
+                            # print(soup12)   
+                    
+                        #如果是自定CP，就不要扫链接了
+                        
+                        # elif openlink_yes=="1":
+                        #     openlink(soup8)
+                        #     data_list1.append(openyesorno)#12
+                        # elif openlink_yes=="2":
+                        #     data_list1.append("")#12
+
+
+                        #做下载链接11 先抓取mid 之后做链接
+                        if cp:
+                            mid=re.findall(r"'mid': '(.*?)',",soupx)
+                            mid= ''.join(mid)
+                            #print(soup16)
+                        else:
+                            mid="无"
+                        # # 这里做一下链接是否可以打开，做了非腾讯的内容17,原本的地方是这个，也是个空位
+                        #做个用mid做的链接，省得我一直做了 17，
+                        #新的做11
+                        # IP_SHENYI="\\\\172.20.49.25\\fpt内容下载\\统一内容下载\\"
+                        # IP_SHENYI="\\\\172.20.215.8\未来组共享\临时盘\\"    
+                        # IP_SHENYI="\\\\172.20.49.15\\未来\\"         
+                        IP_SHENYI="\\\\172.20.215.214\\未来组\\黄亮\\"                               
+
+                        data_list1.append(IP_SHENYI + mid + ".mpeg")#
+
+
+                        #12 这里做查询关键字，查一下关键字
+                        soup12=re.findall(r"'reason': '(.*?)',",soupx)
+                        soup12= ''.join(soup12)
+
+                        #节目审核结果
+                        # print(cp)
+                        # print(soup1)
+
+
+
+
+                        #--------------这里是查历史记录的，先不查了
+                        # #同CP的，同标题
+                        # if soup2 =="节目集无":
+                        #     # print("节目集无")
+                        #     wbdata_2 = requests.get("http://ucas.ottcn.com:9001/es/history?manufacturer=undefined&productionLineId=&productionId=&appId={}&id=&status=&auditType=&auditorId=&programSetId=&startDate=&endDate=&reasonType=&topCategory=&copyright=&type=program&name={}&keyword=&pageSize=100&currentPage=1&tagName=".format(cp,soup1),headers=headers)
+                        # else:
+                        #     wbdata_2 = requests.get("http://ucas.ottcn.com:9001/es/history?manufacturer=undefined&productionLineId=&productionId=&appId={}&id=&status=&auditType=&auditorId=&programSetId=&startDate=&endDate=&reasonType=&topCategory=&copyright=&type=program&name={}&keyword={}&pageSize=100&currentPage=1&tagName=&emptyCover=0&firstAuditStartDate=&firstAuditEndDate=&firstAuditorId=".format(cp,soup1,soup2),headers=headers)
+
+
+
+                        # wbdata_2= wbdata_2.json()
+                        # # wbdata_2 = str(wbdata_2)
+                        # # print(wbdata_2)
+
+
+                        # xulie_del=len(wbdata_2['body'])
+                        # data_list4=[]
+                        # if xulie_del>0:
+                        #     #把所有搜出来的数据都显示出来
+                        #     for jiemu_del in range(0,xulie_del): 
+
+                        #         soupx_del=str(wbdata_2['body'][jiemu_del])#是在这里做了一个序例 jiemu这个不就是一个序例嘛，0 1 2 3 ，第一条，第二条
+                        #         # print(soupx_del)
+
+
+                        #         #看标题
+                        #         soup1_del=re.findall(r"'programName': '(.*?)',",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"'programName': '(.*?)',",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"'programName': \"(.*?)\",",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"'title': '(.*?)',",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"'title': \"(.*?)\",",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"名称', 'type': 'text', 'content': '(.*?)'}",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"名称', 'type': 'text', 'content': \"(.*?)\"}",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"'资源描述', 'type': 'text', 'content': '(.*?)'}",soupx_del)
+                        #         if not any(soup1_del):
+                        #             soup1_del=re.findall(r"'歌名', 'type': 'text', 'content': '(.*?)'}",soupx_del)
+                        #         #这里把WINDOWS不让重命名的符号给删了。   &nbsp; 
+                        #         if any(soup1_del):
+                        #             soup1_del= ''.join(soup1_del[0])
+                        #         else:
+                        #             soup1_del="无"
+
+
+
+                        #         #平台0
+                        #         cpchina_del=re.findall(r"'appName': '(.*?)',",soupx_del)
+                        #         if not any(cpchina_del):
+                        #             cpchina_del=re.findall(r"'版权方', 'type': 'text', 'content': '(.+?)'",cpchina_del)
+                        #         cpchina_del= ''.join(cpchina_del)
+
+
+
+                        #         #片长9
+                        #         #片长9
+                        #         soup9_del=re.findall(r"时长', 'type': 'text', 'content': '(.*?)'}",soupx_del)
+                        #         if not any(soup9_del):
+                        #             soup9_del=re.findall(r"'duration': '(.*?)',",soupx_del)
+                        #         if not any(soup9_del):
+                        #             soup9_del=0#这里不写无，是因为后面要做一个，判断节目与节目集
+                        #         if soup9_del:
+                        #             soup9_del= ''.join(soup9_del[0])
+                        #         else:
+                        #             soup9_del= soup9_del
+
+
+
+
+
+                        #         #腾讯云 、阿里云 、金山云、机器审核
+                        #         soup12_del=re.findall(r"'auditor': '(.*?)'",soupx_del)
+                        #         if soup12_del:
+                        #             soup12_del= ''.join(soup12_del[0])
+                        #         else:
+                        #             soup12_del= ''.join(soup12_del)
+                        #         print(soup12_del)      
+
+
+
+
+
+                        #         name_wuxi =[
+
+                        #         "马天一",
+                        #         "张勇",
+                        #         "赵钱生",
+                        #         "袁畅",
+                        #         "肖萍",
+                        #         "倪秀楠",
+                        #         "涂星星",
+                        #         "金煜晓",
+                        #         "李思颖",
+                        #         "赵玉迪",
+                        #         "朱宁",
+                        #         "许晓燕",
+                        #         "黄甜",
+                        #         "华轩扬",
+                        #         "高妤",
+                        #         "周丹丹",
+                        #         "陆文婷",
+                        #         "王凯",
+                        #         "顾君怡",
+                        #         "王琳娜",
+                        #         "左星星",
+                        #         "沈毅",
+                        #         "孙舒阳",
+                        #         "黄亮",
+
+                        #         ]
+                                
+                                
+                        #         #核对待审节目标题与历史数据里的驳回点
+                        #         #  标题一样            且    审核人是在无锡的人     且     公司是一样的或长片是一样的且时长不是0
+                        #         if soup1_del==soup1 and (soup12_del in name_wuxi) and((cpchina_del==cpchina) or (soup9_del==soup9 and soup9!=0)):
+                        #         # if soup1_del==soup1 and (soup12_del in name_wuxi):
+                        #             # print("一模一样")
+
+
+                        #             #这里做驳回还是通过
+                        #             soup12_1=re.findall(r"'status': '(.*?)'",soupx_del)
+                        #             if soup12_1:
+                        #                 soup12_1= ''.join(soup12_1[0])
+                        #             else:
+                        #                 soup12_1= ''.join(soup12_1)
+                                    
+                        #             if soup12_1:
+                        #                 soup12_1 = soup12_1
+                        #             else:
+                        #                 soup12_1 ="."
+                                    
+
+                        #             if xulie_del == 1:
+                        #                 soup12_1 = soup12_1
+                        #             else:
+                        #                 soup12_1 = soup12_1 + "---下面还有驳回点"
+
+
+                        #             # print(soup12_1)
+
+                        #             #驳回点
+                        #             soup12_2=re.findall(r"'reason': '(.*?)',",soupx_del)
+                        #             # print(soup12_2)
+                        #             #如果驳回点有停或不等于零
+                        #             if soup12_2  or soup12_2!="":
+                        #                 #删除重复值
+                        #                 soup12_2 = list(set(soup12_2))
+
+                        #                 #删除空值
+                        #                 while "" in soup12_2:
+                        #                     soup12_2.remove("")
+                        #                 soup12_2 = '/'.join(soup12_2)
+                        #             # print(soup12_2)
+
+
+
+
+                        #             if soup12 and soup12!="待审界面无驳回点"  :#如果待审里有驳回点，就用待审里的驳回点
+                        #                 data_list4.append(''.join(soup12)+ ".") 
+                        #                 # print("A")
+
+                        #             elif soup12_2!="":
+                        #                 data_list4.append(''.join(soup12_2)+ ".")     
+                        #                 # print("B")                  
+                                        
+                        #             else:
+                        #                 for key_no in ok_jmj_no:#先将驳回关键字遍历
+                        #                     ii=0
+                        #                     if ((key_no[0] in soup1) or (key_no[0] in soup2)):  #如果节目标题或节目集标题包含敏感情   
+                        #                         ii=1
+                        #                         break
+                        #                 if ii==1:
+                        #                     data_list4.append(''.join(key_no[0] + "+"  +key_no[1]) + ".")
+                        #                     # print("c")    
+                        #                 else:
+                        #                     data_list4.append(''.join(soup12_1))
+                        #                     # print("D") 
+
+                        #         else:
+                        #             pass
+                        #             #没有绝对匹配
+                        #             # data_list4.append(".")
+
+                        #     # data_list4.append("^p")
+                        # else:
+                        #     if soup12 and soup12!="待审界面无驳回点":
+                        #         data_list4.append(soup12)
+                        #     else:
+                        #         data_list4.append('.')
+
+
+                        # if len(data_list4) == 0:
+                        #     data_list1.append('.')
+                        # else:
+                        #     data_list4 = list(set(data_list4))
+                        #     data_list1.append('\r\n--------下一个审核意见--------\r\n'.join(data_list4))
+
+                        #--------------这里是查历史记录的，先不查了
+
+                        #不查历史记录，要多放个这个
+                        data_list1.append("没查审核结果")
+                        
+                        #13联合系统重复推送情况太严重，以后不用提交码提交了，改用ID,这里以后用CPCODE--15
+                        data_list1.append(cp)
+
+
+
+                        #MID提交码14
+                        data_list1.append(mid)
+
+                        
+                        #12,再复制一份链接
+                        data_list1.append(soup8)
+
+                        #13，再做一下本地迅雷地址
+                        beng_di="D:\\迅雷下载\\"
+                        data_list1.append(beng_di + mid + ".mp4")#
+                        
+
+
+
+                        data_list2.append(data_list1)#这里每次只抓一条，为什么？  soupx=str(wbdata['body'][jiemu])#是在这里做了一个序例
+                
+
+
+                    try:
+                        #列表去重
+                        new_list = [list(t) for t in set(tuple(_) for _ in data_list2)]
+
+                        #这里做列表排序，reverse=False，正向或反向排序
+
+                        new_list.sort(key=lambda x: x[1], reverse=False)
+                        new_list.sort(key=lambda x: x[2], reverse=True)
+                        new_list.sort(key=lambda x: x[4], reverse=True)
+                        new_list.sort(key=lambda x: x[0], reverse=True)
+
+                    except:
+                        #列表去重
+                        new_list = [list(t) for t in set(tuple(_) for _ in data_list2)]
+
+                        #这里做列表排序，reverse=False，正向或反向排序
+                        new_list.sort(key=lambda x: x[1], reverse=False)
+                        new_list.sort(key=lambda x: x[2], reverse=True)
+                        new_list.sort(key=lambda x: x[4], reverse=True)
+                        new_list.sort(key=lambda x: x[0], reverse=True)
+
+
+                    csvFile = open("新统一系统导出数据联合产品.csv", 'a+',newline='',encoding='utf-8-sig')#a+是追加数据
+                    try:
+                        writer = csv.writer(csvFile)
+                        for item1 in new_list: 
+                            writer.writerow(item1)
+                            #print(item1)
+                    finally:0
+                    csvFile.close()
+
+
+
+
+                
+                    # csvFile = open("------------新统一系统导出数据.csv", 'a+',newline='',encoding='utf-8-sig')#a+是追加数据
+                    # try:
+                    #     writer = csv.writer(csvFile)
+                    #     for item1 in data_list2: 
+                    #         writer.writerow(item1)
+                    #         #print(item1)
+                    # finally:0
+                    # csvFile.close()
+
+
+
+
+                else:
+                    break
+            except:
+                print("出错")
+
+
+
+
+
+
+    except Exception as err:
+        print('c处报错', err)
+        traceback.print_exc()            
+
+
+
+
+
+
+#上面是查询与写下数据库数据，把日期改成当天那个小时的，那不是的，就说明已经审完了，那这些数据就可以删除了。
+def del_one():
+    conn = sqlite3.connect('统一下载.db')
+    rs = conn.cursor()
+    rs.execute("DELETE FROM ottcn WHERE a5!='{}' and a5!='2019/11/11' ".format(today_1))
+    conn.commit()
+    conn.close()
+
+
+
+for x in range(1,200):
+    landing()
+    shurun = input("输入内CP编号后回车，1腾讯，2联合，3自定（33是看链接），4腾讯电视台的，5腾讯分类的:")
+    # sqlite3_yn = input("是否要进数据库下载，1下载，2不下载：")
+    # openlink_yes = input("是否要打开链接，1打开，2不打开：")
+    # sqlite3_yn = "2"
+
+
+    if shurun=="1":
+        grab("5cb3f5c473562",x)#NewTV腾讯
+
+    elif shurun=="4":
+        grab("5cb3f5c473562","浙江电视台")#NewTV腾讯
+        grab("5cb3f5c473562","安徽电视台")#NewTV腾讯
+        grab("5cb3f5c473562","北京电视台")#NewTV腾讯
+        grab("5cb3f5c473562","江苏电视台")#NewTV腾讯
+        grab("5cb3f5c473562","湖南电视台")#NewTV腾讯
+        grab("5cb3f5c473562","湖北电视台")#NewTV腾讯
+        grab("5cb3f5c473562","黑龙江电视台")#NewTV腾讯
+        grab("5cb3f5c473562","四川电视台")#NewTV腾讯
+        grab("5cb3f5c473562","山东电视台")#NewTV腾讯
+        grab("5cb3f5c473562","辽宁电视台")#NewTV腾讯
+        grab("5cb3f5c473562","河北电视台")#NewTV腾讯
+        grab("5cb3f5c473562","福建电视台")#NewTV腾讯
+        grab("5cb3f5c473562","天津电视台")#NewTV腾讯
+        grab("5cb3f5c473562","深圳电视台")#NewTV腾讯
+        grab("5cb3f5c473562","南方电视台")#NewTV腾讯
+        grab("5cb3f5c473562","广东电视台")#NewTV腾讯
+        grab("5cb3f5c473562","江西电视台")#NewTV腾讯
+        grab("5cb3f5c473562","吉林电视台")#NewTV腾讯
+        grab("5cb3f5c473562","齐鲁电视台")#NewTV腾讯
+        grab("5cb3f5c473562","云南电视台")#NewTV腾讯
+        grab("5cb3f5c473562","河南电视台")#NewTV腾讯
+        grab("5cb3f5c473562","青海电视台")#NewTV腾讯
+        grab("5cb3f5c473562","广西电视台")#NewTV腾讯
+        grab("5cb3f5c473562","青海电视台")#NewTV腾讯
+        grab("5cb3f5c473562","贵州电视台")#NewTV腾讯
+        grab("5cb3f5c473562","第一财经")#NewTV腾讯
+        grab("5cb3f5c473562","CNTV")#NewTV腾讯
+        grab("5cb3f5c473562","东方宽频")#NewTV腾讯
+        grab("5cb3f5c473562","央视网")#NewTV腾讯
+        grab("5cb3f5c473562","东方卫视")#NewTV腾讯
+        grab("5cb3f5c473562","旅游卫视")#NewTV腾讯
+        grab("5cb3f5c473562","宁夏电视台")#NewTV腾讯  
+        grab("5cb3f5c473562","未来电视")#NewTV腾讯
+        grab("5cb3f5c473562","南方新媒体")#NewTV腾讯
+        grab("5cb3f5c473562","未来央视媒资")#NewTV腾讯     
+        
+    elif shurun=="5":
+        # grab("5cb3f5c473562","MV")#NewTV腾讯
+        # grab("5cb3f5c473562","综艺")#NewTV腾讯
+        # grab("5cb3f5c473562","电视剧")#NewTV腾讯
+        # grab("5cb3f5c473562","纪录片")#NewTV腾讯
+        # grab("5cb3f5c473562","纪实")#NewTV腾讯
+        # grab("5cb3f5c473562","动漫")#NewTV腾讯
+        grab("5cb3f5c473562","电影")#NewTV腾讯
+        # grab("5cb3f5c473562","新闻")#NewTV腾讯
+        # grab("5cb3f5c473562","资讯")#NewTV腾讯
+        # grab("5cb3f5c473562","财经")#NewTV腾讯
+        # grab("5cb3f5c473562","体育")#NewTV腾讯
+        # grab("5cb3f5c473562","教育")#NewTV腾讯
+        # grab("5cb3f5c473562","其他")#NewTV腾讯
+        # grab("5cb3f5c473562","游戏")#NewTV腾讯
+        # grab("5cb3f5c473562","电竞")#NewTV腾讯
+        # grab("5cb3f5c473562","曲艺")#NewTV腾讯
+        # grab("5cb3f5c473562","购物")#NewTV腾讯
+        # grab("5cb3f5c473562","合作")#NewTV腾讯
+        # grab("5cb3f5c473562","生活")#NewTV腾讯
+        # grab("5cb3f5c473562","时尚")#NewTV腾讯
+        # grab("5cb3f5c473562","汽车")#NewTV腾讯
+        # grab("5cb3f5c473562","母婴")#NewTV腾讯
+        # grab("5cb3f5c473562","科技")#NewTV腾讯
+        # grab("5cb3f5c473562","旅游")#NewTV腾讯          
+        # grab("5cb3f5c473562","搞笑")#NewTV腾讯
+        # grab("5cb3f5c473562","音乐")#NewTV腾讯
+        # grab("5cb3f5c473562","娱乐")#NewTV腾讯
+        grab("5cb3f5c473562","少儿")#NewTV腾讯
+
+
+    elif shurun=="2" :
+        grab("5d4104b8eb802","快速")#NewTV优宝乐园          #下载快速
+        grab("5b2a1714af15a","快速")#NewTV电竞风暴          #下载中速
+        grab("5a250fd73df9e","快速")#NewTV果果乐园-ts       #下载中速
+        grab("5c74a0c4d4c54ef","快速")#NewTV天籁K歌-mp4     #下载快速
+        grab("e8a98ef8c231450","快速")#NewTV伴你读ts        #下载快速
+        grab("5b335accc2d92","快速")#NewTV奇趣星球（福建）-ts   
+        grab("5b20f06352734","快速")#NewTV嗨皮城堡-
+        grab("279db97e006e441","快速")#NewTV豆神优课mp4 
+        grab("783ff295e0584f2","快速")#NewTV叮当少儿ts
+        grab("f19472294ed0456","快速")#NewTV教育盒子mp4
+        grab("474e3e510ce34ed","快速")#NewTV开唛K歌mp4
+        grab("5a30143c3025450","快速")#HiFi音乐mp3
+        grab("5d106718873b3","慢")#NewTVNewTVQQ音乐  #下载慢速
+        grab("5ba36e69da10c","慢")#NewTV炫佳乐园（福建）-     #慢
+        grab("342a540f229745a","慢")#NewTV东方娃娃ts     #慢
+        grab("36300c00b5134c1","慢")#NewTV头号电竞 
+        grab("5aa0b1a82cf0a","慢")#NewTV电竞部落-m3u8这个无法下载，这个改成了ts，后来又改成mp4了
+        grab("1a97be941c084b7",x)#NewTV电竞世界-ts
+        grab("cd6b653c14be444",x)#NewTV九州乐学
+        grab("5c172c1d87152",x)#NewTV成长乐园-
+        grab("5c1753652a938",x)#NewTV玩具秀-
+        grab("5ce254c664b3f",x)#NewTV育学优
+        grab("5bc8531e170ab",x)#NewTV儿歌嘟嘟-
+        grab("5b626d4668d15",x)#NewTV泡泡学院-
+        grab("232e7473f93f4ea",x)#NewTVNewTVTV学堂
+        grab("5d3eb9563c369",x)#NewTV天使宝贝
+        grab("5acaf23aebe3e",x)#NewTV趣玩乐园-
+        grab("5c8f0f2e44738",x)#NewTV小海贝乐园
+        grab("65ad992ed2a6457",x)#NewTV好爸爸学习机
+        grab("5c822a55ae0db",x)#NewTV嘟嘟玩具王国
+        grab("5b21c8f4b6454",x)#NewTV嘟嘟学堂
+        grab("5b20dce7d7f1f",x)#NewTV学而思轻课
+        grab("59fc14834c66c",x)#NewTV拉贝少儿-
+        grab("5a0be61f4f588",x)#畅玩吧-
+        grab("5a742065989e0",x)#NewTV爱跳吧-
+        grab("5ad46de3aa411",x)#NewTV绘本星球-
+        grab("5b03d99cbc9da",x)#NewTV奇趣星球-
+        grab("5b0b64be347c2",x)#NewTV爱尚艺-
+        grab("5b0bcedf85f27",x)#NewTV贝克乐园-
+        grab("5b2b600b30b90",x)#NewTV奇趣星球（湖南）-  
+        grab("5b39ef1092593",x)#NewTV教育直通车-
+        grab("5b3ad239e01c6",x)#NewTV合家欢-
+        grab("5b5960a6e19aa",x)#NewTV最乐嗨-
+        grab("5b70dc4b0dda7",x)#NewTV天天漫趣-
+        grab("5b83be3755398",x)#NewTV炫力动漫-
+        grab("5b8f2e731cbee",x)#NewTV天天动（尊享版）-
+        grab("5b9719f41a2fa",x)#NewTV奇趣生活-
+        grab("5b971a0a6bd20",x)#NewTV奇趣梨园堂-
+        grab("5baee8719eba0",x)#NewTV纳米盒-
+        grab("5bbb043fc9dd3",x)#NewTVITVB-
+        grab("5c2071a4e756d",x)#NewTV天择综艺
+        grab("5cc16bac65281",x)#NewTV才艺童萌
+        grab("5cc174e38d442",x)#NewTV云朵听书
+        grab("5cd14865e48e7",x)#NewTV云端美食
+        grab("5cd39e4eb8e69",x)#NewTV壹米旅行
+        grab("5cc6b0384473a",x)#NewTV老年云课堂
+        grab("5d007a09b9058",x)#NewTV壹米旅行
+        grab("5d5b665baa3c0",x)#NewTV碎片时间
+        grab("5d38172beb118",x)#NewTV冒泡学堂
+        grab("8a692a02d55847b",x)#NewTV电视营业厅
+        grab("5d4ce688d4480",x)#NewTV趣漫游
+        grab("5d0c4f93ca2bf",x)#NewTV健康魔方
+        grab("a1cc43b00df248c",x)#NewTV小鬼当家
+        grab("a8cd6d0c35a44a2",x)#NewTV乐学星空
+        grab("5d0a007f5730a",x)#NewTV贝教育
+        grab("5d15c5ee8e47c",x)#NewTV曲韵风华
+        grab("5d09ebe92edb3",x)#NewTVHi贝乐园
+        grab("72599e0c093e4d7",x)#NewTVHi七彩梦乐园
+        grab("aecfa020df9f477",x)#NewTV亲宝乐园
+        grab("1fe3144ab9524ce",x)#NewTV新东方TV学堂 
+        grab("5acd7675e0dba",x)#NewTV乐玩堂
+        grab("5b70dc610eab0",x)#NewTV生活大爆炸-
+        grab("5d3a5f01196c1",x)#NewTV童趣漫游    
+        grab("fb7d292c65f34ff",x)#NewTV悦享生活 
+        grab("b13f45b0c08e4ba",x)#NewTV视听盛宴
+        grab("5d02f4273950f",x)#NewTV乐享音乐
+        grab("e32be75cb9f148a",x)#NewTV乐享生活乐橙 都是纪录片
+        grab("c64c9f3e2abd47b",x)#NewTV视嘉精选 都是境外的
+        grab("4bf34d0e9acf4aa",x)#NewTV海豚音乐
+        grab("5c666764bff8a",x)#NewTV金麦客专业-这个太多了
+        grab("5d496bdcb7d3e",x)#NewTV绝世佳人
+        grab("a7968299529a459",x)#NNewTV棒棒堂-m3u8这个无法下载,这个改成ts了
+        grab("2df2d46c0937473",x)#NewTV梨园春
+        grab("bdaa9873ab744d3",x)#NewTV反斗二次元
+        grab("b95bf3ceaf4e405",x)#NewTV热舞广场
+        grab("5b2b6b9761c45",x)#NewTV炫麦唱吧-
+        grab("5d521fcb168b5",x)#NewTV创机器人
+        grab("5d539d470e0bd",x)#NewTV好乐演唱会
+        grab("5bee27fb2f8e2",x)#NewTV首发影院
+        grab("5a9e56622905f",x)#NewTV中华卡拉OK-
+        grab("0e0777adb659479",x)#NewTV东成私塾
+        grab("5d36e31a774f4",x)#NewTV电视家庭医生-这个要等比
+        grab("5b91f8d86be0b",x)#NewTV天天电竞
+        grab("5d0a008ee4c1b",x)#NewTVHi贝电竞
+        grab("5b0cb102042d3",x)#NewTV嗨皮电竞-
+        grab("5d5a6aa71b745",x)#NewTV花生电竞
+        grab("0eee8372d2014f8",x)#NewTV乐享电竞
+        grab("c8eb95d3317248c",x)#NewTV赛驰电竞
+        grab("9a55d10b452c46b",x)#NewTV炽兔电竞
+        grab("d561517e590f46d",x)#NewTV1号电竞
+        grab("5d5bd45088ebb",x)#NNewTV电竞先锋
+        grab("5d1af8c2bd9b8",x)#NNewTV游戏视界-ts
+        grab("79b19d2f863d401",x)#NNewTV咪咕健身
+        grab("5b9f077d1dfc8","用后缀下载")#NewTV百灵K歌-ts
+        grab("5d01fa984f0a2",x)#NewTV萌宝绘本屋-mp4
+        grab("8e663b3ce392485",x)#NewTV奥比体感-mp4
+        grab("1fa1d7accf494f2",x)#NewTV联盟电竞-ts
+        grab("00230a7adcfb485",x)#NewTV王者电竞-mp4   
+        grab("f81eceeb54bb47d",x)#NewTV爱跳吧2.0-ts
+        grab("47af0c87810c421",x)#NewTV健康新主张-mp4   
+        grab("5b9f082e49b17",x)#NewTV幸福健身团--ts视频无法下载 .  
+        grab("fbf43ad2dd284a5",x)#NewTV童学优漫-mp4
+        grab("b28dd511f5dc4b4",x)#NewTV藏宝乐园-ts
+        grab("ec69a09103ee4e6",x)#NewTV友唱家-mkv
+        grab("0ce14c0afc9d4a9",x)#NewTV嗨看电竞-mkv
+        grab("f38376bdce1e4d6",x)#NewTV光头熊乐园-mp4
+        grab("8f6253573d2c442",x)#NewTV家长学堂-ts
+        grab("52404ed1e25947b",x)#NewTV快乐城堡-ts     
+        grab("c49e27bca4cb480",x)#NewTV书香人家-ts     
+        grab("7ec6fe8709624ab",x)#NewTV宝宝乐园-ts  
+        grab("65cd57364a774f9",x)#NewTV易抖屏-mp4 
+        grab("8f4313512253424",x)#NewTV正在上演-ts  
+        grab("43ea4e42a593404",x)#NewTVOK智慧书房mp4
+        grab("2f0a38f5e60243c",x)#NewTV电竞风暴云烨mp4
+        grab("0f2dc9fedca9400",x)#NewTVVR视界TS
+        grab("bbd0d19a85884db",x)#NewTV第二课堂mp4   
+        grab("f657346efd4b46a",x)#NewTV格调生活ts 
+        grab("64c9c08e9831481",x)#NewTV探奇动物界ts   
+        grab("c35b156dafa146a",x)#NewTV百映优生活mp4 
+        grab("a1aa30ac16ab43e",x)#NewTV淘好玩mp4 
+        grab("1a8493b386fe481",x)#NewTV人民日报TVmp4      
+        grab("8e9cf73168a7475",x)#NewTV智车行ts     
+        grab("4c01b6f9dff6471",x)#NewTV飞咪玩具ts      
+        grab("0e42b537b032478",x)#NewTV唱吧云吧ts    
+        grab("ac927fcfdfa04a5",x)#NewTV牛人科学ts    
+        grab("6349c5e491dd425",x)#NewTV精灵乐园ts  
+        grab("065993216f9047c",x)#NewTV索路英语ts  
+        grab("ff89bc4c0363442",x)#NewTV小狐狸英语mp4   
+        grab("ed48f7c4bbe5484",x)#欢视TVts
+        grab("a5a27b2fbfef47e",x)#欢视AI云健身mp4
+        grab("8bef5c0ac95b42d",x)#海豹电影身mp4     
+        grab("dd16dad91aaa4c9",x)#Smartisanmp4
+        grab("1399f9c9d9a9463",x)#凯叔讲故事
+        grab("216086dd2d4d4c4",x)#懒人听书
+        grab("ce61b87c74f0400",x)#移动购
+        grab("9493cc0ff07645e",x)#天天动
+        grab("3e5c45f2999b4b2",x)#运动加加
+        grab("38e906aa8085463",x)#智多星 
+        grab("df96a1f520794cd",x)#聚识学堂 
+        grab("d6399ea8c89f495",x)#探梦实验室
+        grab("0e888ef16461436",x)#爱家教育（东冠）
+        grab("97ac038668084b7",x)#语音互动乐园
+        grab("81046ff7754d470",x)#橙子乐园
+        grab("8bc1188c237649f",x)#移动爱家健康
+        grab("5b626d660c2c7",x)#NewTV玩具反逗城- 
+        grab("89d662e72997488",x)#NewTV舞动节拍-
+        grab("b54e517841214ed",x)#乡镇电视-
+        grab("eec1c0f17f5e403",x)#欢网-周边生活-
+        grab("656bd9fbaeb4472",x)#快唱k歌-
+        grab("5c73dee79f154c8",x)#NNewTV欢乐歌房
+        grab("2deee962a7d2424",x)#NewTV新奥特-暂未配置机审
+        grab("745a0c18c951477",x)#CMS恒信
+        grab("5959269c7d56455",x)#NewTV智慧家校（九江）
+        grab("68ef757ddbc6403",x)#数智云培
+        grab("db007af5e4454bd",x)#体考帮
+        grab("c70139f46ffb4cf",x)#聚好学
+        grab("fa09e5824db5480",x)#社区电视
+        grab("27e699d921ac45e",x)#移动云VR
+        grab("c1ca89d1e951467",x)#家庭剧场
+        grab("eea4def5fbe34e7",x)#酷狗音乐
+        grab("58f8a56519294fb",x)#亲亲伴读
+        grab("d1a42e531647408",x)#keep
+        grab("9784b6f52b49474",x)#易学
+        grab("158d8fbc24684ff",x)#微医健康通
+        grab("f085b7c7b1f5422","慢")#NewTV爱家教育ts    #慢
+        grab("bb30fcbccee84ef","慢")#NewTV凤凰书苑ts    #慢
+        grab("69743bd1cc96459",x)#NewTV高尔夫频道
+        grab("0fd708c46d8d411",x)#NewTV哈啰农场
+        grab("c8ef34282f3249b",x)#NewTV名师优学
+        grab("dc2f0f279423470",x)#NewTV江苏keep
+        grab("865af53f9e32491",x)#NewTV乡村电视
+        grab("cd923c90896c424",x)#NewTV享生活
+        grab("401770b242844db",x)#NewTV5G云游戏
+        grab("7742345caf244d1",x)#NewTV趣配音
+        grab("5977a6fabbd6465",x)#NewTV敦煌市三位一体数字化在线教育平台
+        grab("235e5e0657c847a",x)#NewTV易平方影视apk
+        grab("88e3b199ee444c5",x)#NewTV欢视频
+        grab("8ccc687d350948e",x)#NewTV虎牙电竞   
+        grab("4ea2d41a78ee4e7",x)#随心看
+        grab("23551f42c2ec4c1",x)#肺爱之家
+        grab("c13a4e0c1d114f5",x)#广西和教育
+        grab("ae1079ccc4c54cf",x)#多维视频
+        grab("63e65c3a88d54e0",x)#海贝微剧
+        grab("27c22dff70904d6",x)#NewTV福建移动快应用
+        grab("f7c63180a27b4e3",x)#NewTVAI互动学
+        grab("42179058791f48f",x)#NewTV天天电竞（科大讯飞）
+        grab("9bd6718519934b2",x)#NewTVVR新空间
+        grab("e49ebb0b61f246f",x)#动物乐园
+        grab("1ca2eefd399a42b",x)#脑力大冒险
+        grab("22516225fe0e492",x)#耍大牌
+        grab("6ad023f9a65a43b",x)#开源唱吧
+        grab("becb7ea92c81437",x)#NewTV蜻蜓FM(江西)
+        grab("935869b29fda47d",x)#NewTV喜马拉雅TV     
+        grab("69160b7185384e2",x)#NewTV祝您健康
+        grab("f3a7a3254df848b",x)#NewTV全民K歌
+        grab("5a819ebe772d4b5",x)#NewTV健康新风尚
+
+        
+        
+        
+
+
+         # 下面的先不审
+        # grab("b843f85f805b4e1",x)#金胡桃JHT
+        # grab("59bf278c348b3",x)#NewTVCMS3.1
+        # grab("5ce366b88ed52",x)#NewTV咪咕
+        # grab("5d25a981ba83d",x)#NewTV新视听
+        # grab("b284012ae14d411",x)#4K花园
+        # grab("cb179b880cca499",x)#NewTV特征码测试
+        # grab("62a9c60ca3cd452",x)#NewTV小电视
+        # grab("5c45369e76604d9",x)#NewTV小电视甘肃
+        # grab("a3414d4189a84cb",x)#NewTV云南底量复审
+
+
+        # print("开始删库")
+        #上面是查询与写下数据库数据，把日期改成当天那个小时的，那不是的，就说明已经审完了，那这些数据就可以删除了。
+        # del_one()
+
+    elif shurun=="3" or shurun=="33":
+        cpname = input("输入CP编号5aa0b1a82cf0a：")
+        grab("{}".format(cpname),x)
+    
+
+    winsound.Beep(300,2000)#第一个参数是频率，频率越大，音调越尖； 第二个数字是声音持续时间，单位是毫秒。
+    #print("开始等5分钟")
+    # time.sleep(1500)         
+    # print("出错")
+
+
+
+# http://ucas.ottcn.com:9001/audit/task?appId={}&id=&auditType=&isMachine=0&userId=9&emptyCover=&flag=0&type=program&machineStatus=&dataFlag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&pageSize=100&currentPage={}
+
+# http://ucas.ottcn.com:9001/audit/task?appId={}&id=&auditType=&isMachine=0&userId=9&emptyCover=&flag=0&type=program&machineStatus=&dataFlag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&pageSize=100&currentPage={}
+
+
+
+import winsound#播放WINDWOS自带的音乐
+winsound.Beep(300,5000)#第一个参数是频率，频率越大，音调越尖； 第二个数字是声音持续时间，单位是毫秒。
