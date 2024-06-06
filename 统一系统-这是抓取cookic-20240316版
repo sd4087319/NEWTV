@@ -1,0 +1,588 @@
+import io
+import sys
+import csv
+# 改变标准输出的默认编码
+# sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+print_ = print
+def my_print(*args, **kwargs):
+    if 'flush' not in kwargs:
+        kwargs['flush'] = True
+    print_(*args, **kwargs)
+print = my_print
+flush = True
+
+from bs4 import BeautifulSoup    #解析HTML响应
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+import urllib.request
+import urllib.parse
+session = requests.Session()
+import re
+import os
+import time
+import winsound#播放WINDWOS自带的音乐
+# from win32com.client import Dispatch
+# import win32gui,win32api,win32con
+# thunder = Dispatch('ThunderAgent.Agent64.1')
+import sqlite3
+import datetime
+from selenium import webdriver
+import time
+
+import socket
+import re
+import win32com.client as win
+
+
+#做一个时间
+today=datetime.date.today()
+if today.year==2024:
+    pass
+else:
+    exit()
+    #print("执行")
+
+
+# #登陆CMS网站
+# params = {'username': 'matianyi@staff.cntv.cn', 'password': 'matianyi'}
+# s = session.post("http://ucas.ottcn.com:9001/admin/login", params)
+# print(s)
+
+
+#登陆统一网，这里每次都要复制新的头像cookie
+#params = {'username': 'matianyi@staff.cntv.cn', 'password': 'matianyi'}
+#Cookie要每次复制新的有点麻烦
+
+
+
+# list1 = { 
+# '资讯': 'dda93a0f501d475',
+# '财经': 'dda93a0f501d475',
+# '合作': '5cb3f5c473562',
+# }
+
+# speak = win.Dispatch("SAPI.SpVoice")
+# for key in list1:
+#     wbdata_1 = requests.get("http://ucas.ottcn.com:9001/es/task?productionLineId=&productionId=&appId={}&id=&auditType=&isMachine=0&userId=49&emptyCover=0&flag=0&type=program&machineStatus=&dataFlag=0&kind={}&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&keyword=&pageSize=100&currentPage=1".format(list1[key],key),headers=headers)
+#     wbdata_1= wbdata_1.json()
+#     print("这边有错误吗")
+#     xulie=wbdata_1['totalCount']
+#     if xulie >0:
+#         speak.Speak(key +  "来数据了 请优先审核")
+#     else:
+#         print("没数据————————————————————————————————————")
+
+
+
+
+
+
+
+
+
+
+
+
+def landing():
+    try:
+        global headers
+        f = open('\\\\172.20.215.214\\未来组\\未来程程下载\\id.txt')
+        s=f.read()
+        f.close() 
+        headers = {
+        # 'Cookie':'JSESSIONID={}'.format(s),
+        'Cookie':'SESSION={}'.format(s),   
+        # 'Cookie':'SESSION=ZGM1YjVmMTctYjc0Ni00ODg3LTg3NzUtNDFiYjQ3MTQxZWE5',
+        'Host':'ucas.ottcn.com:9001',
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:69.0) Gecko/20100101 Firefox/69.0',
+        'Content-Type': 'application/json;charset=UTF-8'
+        # 新的
+
+    }
+        wbdata = session.get("http://ucas.ottcn.com:9001/es/task?appId=&id=&auditType=&isMachine=0&userId=9&emptyCover=0&flag=0&type=program&machineStatus=&dataFlag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&keyword=&pageSize=10&currentPage=1",headers=headers)  #, auth=('matianyi@staff.cntv.cn','matianyi111'
+        # print(wbdata)
+        c= wbdata.json()
+        # print(c)
+        #print(c['body'])
+        #print(c['body'][0]['mid'])
+        if c['body']=="用户未登录或用户登录超时":
+            print("登陆失败")
+        else:
+            print("登陆成功")
+    except:
+        print("landing出错")
+        cookie()
+
+# C:\Program Files\Mozilla Firefox
+
+def cookie():
+    max_retry = 0
+    while max_retry<3:
+        try:
+
+            location = 'C:/Program Files/Mozilla Firefox/firefox.exe'
+            driver = webdriver.Firefox(firefox_binary=location)
+
+
+
+            driver.get(driver.current_url)
+            # driver.get('https://ssop.cloud.ottcn.com/cas/login?service=http%3A%2F%2Fucas.ottcn.com%3A9001%2Flogin')#不知道为什么被禁了
+                      # https://ssop.cloud.ottcn.com/cas/login?service=http%3A%2F%2Fucas.ottcn.com%3A9001%2Flogin
+            # driver.get('https://ssop.cloud.ottcn.com/cas/login?service=http%3A%2F%2Fucas.ottcn.com%3A9001%2Flogin')
+            # driver.get('http://ucas.ottcn.com/dashboard/index')
+            # driver.get('https://ssop.cloud.ottcn.com/cas/login')
+            # driver.get('http://ucas.ottcn.com/dashboard/index')
+            driver.get('http://ucas.ottcn.com/dashboard/index')
+                        # https://ssop.cloud.ottcn.com/cas/login
+
+            # https://ssop.cloud.ottcn.com/cas/login
+            # http://ucas.ottcn.com/dashboard/index
+            time.sleep(5)
+            #填充用户名 密码 验证码
+            driver.find_element_by_id("username").send_keys("huangliang")
+            driver.find_element_by_id("password").send_keys("CNTVott@1525163#")
+            time.sleep(5)
+            #点击登录 
+            driver.find_element_by_name("submit").click()
+
+            time.sleep(5)
+            # print(driver.current_url)
+            # text=driver.page_source
+            cookie = driver.get_cookies()
+            # print(cookie)
+            print(cookie[0]['value'])
+            with open('\\\\172.20.215.214\\未来组\\未来程程下载\\id.txt','w') as f: #打开一个文件只用于写入。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件
+                f.writelines(cookie[0]['value'])
+            driver.quit()
+            break
+
+        # except Exception as a:
+        except:
+            print("try出错")
+            time.sleep(3)
+            #这里加一个清空火狐COOKIE缓存
+            #driver.delete_all_cookies()
+            driver.quit()
+            time.sleep(5)
+            max_retry += 1
+
+
+    
+
+#这个是测试是否可以连网络的,但是在新电脑用win2012的电脑不行
+def Surf_Internet():
+    from time import sleep
+    from subprocess import run, PIPE
+    cnt = 1
+    while True:
+        r = run('ping www.baidu.com',
+                stdout=PIPE,
+                stderr=PIPE,
+                stdin=PIPE,
+                shell=True)
+        #如果不能连联网则提示打印一次
+        if r.returncode:
+            print('relogin 第{}次'.format(cnt))
+            # login() 这里写login函数
+
+            import win32com.client as win
+            speak = win.Dispatch("SAPI.SpVoice")
+            # speak.Speak('电脑断网了，请值班重启电脑开机，重新下载')
+            # import time
+            time.sleep(60)
+        else:
+            print('正常联网')
+            cnt += 1
+            if cnt==10:
+                break
+        sleep(60) # 每半个小时检查一次
+
+
+#这个用于新电脑
+def Surf_Internet_win2012():
+    from time import sleep
+    cnt = 1
+    while True:
+        try:
+            # f = open('\\\\172.20.49.25\\未来程序$\\cookie1.txt')
+            f = open('\\\\172.20.215.214\\未来组\\未来程程下载\\id.txt')
+                
+
+            print('正常联网')
+            cnt += 1
+            if cnt==5:
+                break
+            sleep(60) # 每半个小时检查一次 
+        except:
+            
+            
+            import win32com.client as win
+            speak = win.Dispatch("SAPI.SpVoice")
+            speak.Speak('电脑断网了，请值班重启电脑开机，重新下载')
+            print("电脑断网")
+            # import time
+            sleep(60)
+
+
+import psutil
+import time
+
+
+#这个是一小时切一次网络
+def getNet():
+    sent_before = psutil.net_io_counters().bytes_sent  # 已发送的流量
+    recv_before = psutil.net_io_counters().bytes_recv  # 已接收的流量
+    time.sleep(1)
+    sent_now = psutil.net_io_counters().bytes_sent
+    recv_now = psutil.net_io_counters().bytes_recv
+    sent = (sent_now - sent_before)/1024  # 算出1秒后的差值
+    recv = (recv_now - recv_before)/1024
+    #换算成MB
+    recv = (recv_now - recv_before)/1024/1024
+    print(recv)
+    print(time.strftime(" [%Y-%m-%d %H:%M:%S] ", time.localtime()))
+    # print("上传：{0}KB/s".format("%.2f"%sent))
+    # print("下载：{0}KB/s".format("%.2f"%recv))
+    print("下载：{0}MB/s".format("%.2f"%recv))
+    print('-'*32)
+
+    import win32com.client as win
+
+    addrs = socket.getaddrinfo(socket.gethostname(), None)
+
+    
+    speak = win.Dispatch("SAPI.SpVoice")
+    if recv >30:
+        # speak.Speak("大于三十，报M")
+        # time.sleep(1)
+        # speak.Speak(int(recv))
+        # os.system('15.bat')
+        print("网络大于30M，不变")
+        #print(addrs)
+  
+    else:
+        print("网络小于30M，切网络")
+        print(addrs)
+        #获取计算机名称
+        #hostname=socket.gethostname()
+        #获取本机IP
+        #ip=socket.gethostbyname(hostname)
+        #print(ip)
+
+        #获取本机所有IP
+        
+        # print(addrs)
+
+        if re.search(r'172.20.49.15',str(addrs)):
+            print("本机IP是172.20.49.15")
+            os.system('171.bat')
+            print("切到171网络")
+        elif re.search(r'172.20.49.172',str(addrs)):
+            print("本机IP是172.20.49.172")
+            os.system('15.bat')     
+            print("切到15网络")
+
+
+
+
+        #print("小于20M，切网络")
+        #speak.Speak('下载速度小于20M，切网络')
+        #os.system('115.bat')
+        #print("网络小于20M,用115的网络")
+        
+
+
+#先切成15，等60秒，看一下网速，大于50M就用15，小于50M就用172
+def getNet_15():
+
+    import win32com.client as win
+    addrs = socket.getaddrinfo(socket.gethostname(), None)
+
+    if re.search(r'172.20.49.15',str(addrs)):
+        print("本机IP是172.20.49.15")
+        # os.system('171.bat')
+        # print("切到171网络")
+    elif re.search(r'172.20.49.172',str(addrs)):
+        print("本机IP是172.20.49.172")
+        os.system('15.bat')     
+        print("切到15网络")
+
+
+    time.sleep(20)
+
+    #先删到15网段
+    # os.system('15.bat')    
+    # print("本机IP是172.20.49.15")
+    # time.sleep(60)
+
+
+
+    sent_before = psutil.net_io_counters().bytes_sent  # 已发送的流量
+    recv_before = psutil.net_io_counters().bytes_recv  # 已接收的流量
+    time.sleep(1)
+    sent_now = psutil.net_io_counters().bytes_sent
+    recv_now = psutil.net_io_counters().bytes_recv
+    sent = (sent_now - sent_before)/1024  # 算出1秒后的差值
+    recv = (recv_now - recv_before)/1024
+    #换算成MB
+    recv = (recv_now - recv_before)/1024/1024
+
+    time.sleep(20)
+
+    
+    print(recv)
+    print(time.strftime(" [%Y-%m-%d %H:%M:%S] ", time.localtime()))
+    # print("上传：{0}KB/s".format("%.2f"%sent))
+    # print("下载：{0}KB/s".format("%.2f"%recv))
+    print("下载：{0}MB/s".format("%.2f"%recv))
+    print('-'*32)
+
+    import win32com.client as win
+    addrs = socket.getaddrinfo(socket.gethostname(), None)
+    time.sleep(20)
+
+    speak = win.Dispatch("SAPI.SpVoice")
+    if recv >8:
+        # speak.Speak("大于50，报M")
+        # time.sleep(1)
+        # speak.Speak(int(recv))
+        # os.system('15.bat')
+        print("网络大于8M，不变")
+        #print(addrs)
+  
+    else:
+        print("网络小于30M，切网络")
+        print(addrs)
+        os.system('171.bat')
+
+        #获取计算机名称
+        #hostname=socket.gethostname()
+        #获取本机IP
+        #ip=socket.gethostbyname(hostname)
+        #print(ip)
+
+        #获取本机所有IP
+        
+        # print(addrs)
+
+        # if re.search(r'172.20.49.15',str(addrs)):
+        #     print("本机IP是172.20.49.15")
+        #     os.system('171.bat')
+        #     print("切到171网络")
+        # elif re.search(r'172.20.49.172',str(addrs)):
+        #     print("本机IP是172.20.49.172")
+        #     os.system('15.bat')     
+        #     print("切到15网络")
+
+
+
+
+        #print("小于20M，切网络")
+        #speak.Speak('下载速度小于20M，切网络')
+        #os.system('115.bat')
+        #print("网络小于20M,用115的网络")
+
+
+def new():
+    list1 = { 
+    '资讯': 'dda93a0f501d475',
+    '财经': 'dda93a0f501d475',
+    '合作': '5cb3f5c473562',
+    '': 'b738cf26ea6d498',  #内容开放平台
+    '': '69743bd1cc96459', #高尔夫
+
+    }
+
+    speak = win.Dispatch("SAPI.SpVoice")
+    for key in list1:
+        wbdata_1 = requests.get("http://ucas.ottcn.com:9001/es/task?productionLineId=&productionId=&appId={}&id=&auditType=&isMachine=0&userId=49&emptyCover=0&flag=0&type=program&machineStatus=&dataFlag=0&kind={}&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&startDate=&endDate=&keyword=&pageSize=100&currentPage=1".format(list1[key],key),headers=headers)
+        wbdata_1= wbdata_1.json()
+        # print("这边有错误吗")
+        xulie=wbdata_1['totalCount']
+        if xulie >0:
+            if list1[key]!="b738cf26ea6d498" and list1[key]!="69743bd1cc96459":
+                speak.Speak(key +  "来数据了" + str(xulie) + "条" + "请优先审核")
+                time.sleep(10)
+                speak.Speak(key +  "来数据了" + str(xulie)  + "条" + "请优先审核")
+                print(key +  "来数据了" + str(xulie)  + "条" + "请优先审核")
+            elif list1[key]=="b738cf26ea6d498":
+                speak.Speak("内容开放平台来数据了" + str(xulie) + "条" + "请优先审核")
+            elif list1[key]=="69743bd1cc96459":
+                speak.Speak("高尔夫球来数据了" + str(xulie) + "条" + "请优先审核")
+
+            
+
+        else:
+            print(key + "没数据————————————————————————————————————")
+
+
+
+
+
+
+landing()
+cookie()          
+
+aaa =1
+bbb =1
+
+for x in range(100000000000000):
+    try:
+        # bbb = bbb + 1
+        # while bbb > 3:   
+        #     new()
+        #     bbb=1 
+
+        aaa = aaa + 1
+        while aaa > 5:
+            cookie()
+            landing()
+            aaa=1 
+        
+        #这个是测试是否可以连网络的
+        # Surf_Internet()
+        # Surf_Internet_win2012()
+        # time.sleep(10)
+        
+        #十分钟
+        #这个是看有没有新闻的
+        landing()
+        new()
+        
+        # getNet_15()
+
+        #测试下载速度
+        # getNet()
+
+        # print("开始等5分钟")
+        # time.sleep(3600)#6000是一个半小时
+
+        time.sleep(900)
+        print("开始等20分钟")
+    except:
+        print("出错")
+    
+
+
+
+    
+
+
+#登陆CMS网站
+# r = requests.options("http://ucas.ottcn.com:9001/admin/login", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+# print(r)
+
+# wbdata = requests.get("http://ucas.ottcn.com:9001/audit/task?appId=&type=&tag=&id=&value1=&index1=&value2=&index2=&flag=1&pageSize=10&currentPage=1",headers=headers).text
+# print(wbdata)
+# soup = BeautifulSoup(wbdata,'lxml')
+# print(soup)
+
+#搞定
+# data = {"auditList":[{"mid":"5d57dbd458d2aa54d07a0989","status":"pass","auditorId":"9","auditor":"马天一","reasonType":"","reason":""}]}
+# wbdata = session.post("http://ucas.ottcn.com:9001/audit/doTask",headers=headers,data=json.dumps(data)).text
+# print(wbdata)
+
+
+
+# params = {'username': 'matianyi', 'password': 'average'}
+# r = session.post("http://ucas.ottcn.com:9001/admin/login",headers=headers,params)#
+# print(r)
+
+
+
+
+# r = requests.options("http://ucas.ottcn.com:9001/admin/login",headers=headers,auth=('1matianyi@staff.cntv.cn','matianyi'))#
+# print(r)
+
+# r = requests.get("http://ucas.ottcn.com:9001/admin/login",headers=headers,auth=('1matianyi@staff.cntv.cn','matianyi'))#
+# print(r)
+
+
+
+
+# r = session.get("http://ucas.ottcn.com:9001/admin/login",auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+# print(r.text)
+
+# r = session.post("http://ucas.ottcn.com:9001/admin/login",auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+# print(r.text)
+
+
+
+
+
+
+
+
+# r = session.get("http://ucas.ottcn.com:9001/audit/task?appId=5cb3f5c473562&id=t0763bqbvh9&userId=9&emptyCover=1&type=program&flag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&currentPage=1", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+# print(r.text)
+
+
+# r = requests.options("http://ucas.ottcn.com:9001/admin/login",headers=headers,auth=('matianyi@staff.cntv.cn','matianyi'))#
+# print(r)
+# # matianyi=str(r.text)
+# # print(matianyi)
+
+# wbdata = requests.get("http://ucas.ottcn.com:9001/audit/task?appId=&id=&userId=9&emptyCover=&type=program&flag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&currentPage=1",headers=headers,auth=('matianyi@staff.cntv.cn','matianyi'))#
+# soup = BeautifulSoup(wbdata.content,'lxml')
+# print(soup)
+
+
+# r = session.get("http://ucas.ottcn.com:9001/audit/task?appId=5cb3f5c473562&id=t0763bqbvh9&userId=9&emptyCover=1&type=program&flag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&currentPage=1", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+# print(r.text)
+
+
+# # r = session.get("http://ucas.ottcn.com:9001/audit/task?appId=5cb3f5c473562&type=&tag=&id=&value1=&index1=&value2=&index2=&flag=1&pageSize=10&currentPage=1", headers=headers)
+# # print(r.text)
+
+# # data = {"mid":"5d53b00a58d2aa041b058221","status":"pass","auditorId":"9","auditor":"马天一","reasonType":"","reason":""}
+# # wbdata = session.post("http://ucas.ottcn.com:9001/audit/doTask", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers,params = data).text
+# # print(wbdata)
+# wbdata = session.get("http://ucas.ottcn.com:9001/audit/task?appId=5cb3f5c473562&id=b0031coqj26&userId=9&emptyCover=&type=program&flag=0&kind=%E5%8A%A8%E6%BC%AB&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&currentPage=1", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers,params = data).text
+# print(wbdata)
+
+
+
+
+
+# def landing():
+#     try:
+#         # r = requests.get("http://ucas.ottcn.com:9001/admin/login", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+#         r = session.get("http://ucas.ottcn.com:9001/admin/login", auth=('matianyi@staff.cntv.cn','matianyi'),headers=headers)
+
+#         print(r)
+#         matianyi=str(r.text)
+#         soup3=re.findall(r'<span class="hidden-xs">(.+?)</span>',matianyi)
+#         print(soup3)
+#         soup3=" ".join(soup3)#列表转字符串
+#         if soup3=="马天一":
+#             print("登陆成功----------------------------------------------------------------------")
+#         else:
+#             print("登陆失败了--------------------------------------------------------------------")
+#     except:
+#         print("登陆出错")
+
+
+
+# landing()
+
+# http://ucas.ottcn.com:9001/audit/task?appId=5cb3f5c473562&id=u05523p7slu&userId=9&emptyCover=1&type=program&flag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&currentPage=1
+# http://ucas.ottcn.com:9001/audit/task?appId=5cb3f5c473562&id=u05523p7slu&userId=9&emptyCover=1&type=program&flag=0&kind=&country=&copyright=&name=&programSetId=&manufacturer=&tencentId=&tencentSetId=&currentPage=1
+
+# import os
+# import sys
+ 
+# # 重定向标准输出到/dev/null（Unix-like系统）
+# if sys.platform == 'linux' or sys.platform == 'darwin':
+#     with open(os.devnull, 'w') as devnull:
+#         with redirect_stdout(devnull):
+#             print(".")
+ 
+# # 重定向标准输出到nul（Windows系统）
+# elif sys.platform == 'win32':
+#     with open(os.devnull, 'w') as devnull:
+#         with redirect_stdout(devnull):
+#             print(".")
+ 
+
+
