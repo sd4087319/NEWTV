@@ -1,0 +1,204 @@
+import hashlib #导入hashlib模块
+import io
+import sys
+import csv
+# 改变标准输出的默认编码
+#sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+print_ = print
+def my_print(*args, **kwargs):
+    if 'flush' not in kwargs:
+        kwargs['flush'] = True
+    print_(*args, **kwargs)
+print = my_print
+flush = True
+
+from bs4 import BeautifulSoup    #解析HTML响应
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+import urllib.request
+import urllib.parse
+session = requests.Session()
+import re
+import os
+import time
+import winsound#播放WINDWOS自带的音乐
+# from win32com.client import Dispatch
+# import win32gui,win32api,win32con
+# thunder = Dispatch('ThunderAgent.Agent64.1')
+import sqlite3
+import openpyxl
+from openpyxl import load_workbook
+import openpyxl.styles
+import os, sys
+from subprocess import call
+import pymysql
+
+
+import datetime
+#这里做了一个日期，当天的日期，省得自个再手打
+a = datetime.date.today()#年月日
+b=datetime.datetime.now()#时分秒
+today_1=str(a.year) + "/" + str(a.month)+ "/"  + str(a.day)
+# print(today_1)
+
+
+
+
+def match(file_path,Bytes=1024):
+    global ret
+    md5_1 = hashlib.md5() #创建一个md5算法对象
+
+    with open(file_path,'rb') as f:  #打开一个文件，必须是'rb'模式打开
+        while 1:
+            data =f.read(Bytes)  #由于是一个文件，每次只读取固定字节
+            if data:  #当读取内容不为空时对读取内容进行update
+                md5_1.update(data)
+            else:  #当整个文件读完之后停止update
+                break
+    ret = md5_1.hexdigest()#获取这个文件的MD5值
+    return ret
+
+# print(match(r'\\172.20.215.8\未来组共享\临时盘\2307515149.mpeg'))
+
+
+
+#这是表名
+excel_mty="工作量.xlsx"
+
+# 打开已有的excel
+wb = openpyxl.load_workbook(excel_mty)
+
+# 获取所有表名
+sheet_names = wb.sheetnames
+print(sheet_names)
+
+# 打开第一个 sheet 工作表 0是第一个工作表，1是第2个
+sheet1 = wb[sheet_names[0]] 
+
+#看一下有多少列
+Row_number=sheet1.max_row
+print(Row_number)
+sheet1["A{}".format(1)] = "{}".format("A") #片长时长
+sheet1["B{}".format(1)] = "{}".format("B") #驳回点字数   
+sheet1["C{}".format(1)] = "{}".format("C") #复审工作量    
+sheet1["D{}".format(1)] = "{}".format("D") #复审工作量
+sheet1["E{}".format(1)] = "{}".format("E") #片长/时长
+sheet1["F{}".format(1)] = "{}".format("F") #驳回点字数   
+sheet1["G{}".format(1)] = "{}".format("G一审") #复审工作量    
+sheet1["H{}".format(1)] = "{}".format("H二审") #复审工作量
+sheet1["I{}".format(1)] = "{}".format("I") #片长/时长
+sheet1["J{}".format(1)] = "{}".format("J") #驳回点字数   
+sheet1["K{}".format(1)] = "{}".format("K") #复审工作量    
+sheet1["L{}".format(1)] = "{}".format("L复审") #复审工作量
+sheet1["M{}".format(1)] = "{}".format("M") #复审工作量
+
+
+sheet1["N{}".format(1)] = "{}".format("倍数除片长") #片长/时长
+sheet1["O{}".format(1)] = "{}".format("驳回点字数") #驳回点字数   
+sheet1["P{}".format(1)] = "{}".format("一审工作量") #复审工作量    
+sheet1["Q{}".format(1)] = "{}".format("复审工作量") #复审工作量
+
+
+for x in range(2,Row_number+1):#这是一共几行，从第二行开始
+
+
+
+    print(x)
+    xxA=sheet1['A{}'.format(x)].value#倍速
+    xxA=str(xxA)
+    xxA = xxA.strip()
+
+
+    xxK=sheet1['K{}'.format(x)].value#工作量
+    xxK=str(xxK)
+    xxK = xxK.strip()
+
+
+    xxJ=sheet1['J{}'.format(x)].value#驳回点处的文件
+    xxJ=str(xxJ)
+    xxJ = xxJ.strip()
+    
+    if xxJ == "None":
+        xxJ = "无值"
+        kkk = 0  #如果驳回点是0，就乘以0，让他为0
+    
+    else:
+        kkk = 1
+    print(xxJ)
+
+
+    if "一倍" in xxA :
+        xxK = float(xxK)
+        sheet1["N{}".format(x)] = "{}".format(float(xxK)) #片长/时长
+        sheet1["O{}".format(x)] = "{}".format(float(len(xxJ))*5*kkk) #驳回点字数   
+        wordnum =  float(xxK)
+        sheet1["P{}".format(x)] = "{}".format(wordnum) #一审工作量    
+        sheet1["Q{}".format(x)] = "{}".format(float(wordnum)/3) #复审工作量
+    
+    elif "二倍" in  xxA :
+        xxK = float(xxK)/2
+        sheet1["N{}".format(x)] = "{}".format(float(xxK)) #片长/时长
+        sheet1["O{}".format(x)] = "{}".format(float(len(xxJ))*5*kkk) #驳回点字数
+        wordnum =  float(xxK) 
+        sheet1["P{}".format(x)] = "{}".format(wordnum) #一审工作量    
+        sheet1["Q{}".format(x)] = "{}".format(float(wordnum)/3) #复审工作量
+
+    elif "四倍" in  xxA :
+        xxK = float(xxK)/4
+        sheet1["N{}".format(x)] = "{}".format(float(xxK)) #片长/时长
+        sheet1["O{}".format(x)] = "{}".format(float(len(xxJ))*5*kkk) #驳回点字数
+        wordnum =  float(xxK)
+        sheet1["P{}".format(x)] = "{}".format(wordnum) #一审工作量    
+        sheet1["Q{}".format(x)] = "{}".format(float(wordnum)/3) #复审工作量
+
+    elif "十倍" in  xxA :
+        xxK = float(xxK)/10
+        sheet1["N{}".format(x)] = "{}".format(float(xxK)) #片长/时长
+        sheet1["O{}".format(x)] = "{}".format(float(len(xxJ))*5*kkk) #驳回点字数
+        wordnum =  float(xxK) 
+        sheet1["P{}".format(x)] = "{}".format(wordnum) #一审工作量    
+        sheet1["Q{}".format(x)] = "{}".format(float(wordnum)/3) #复审工作量
+    else:
+        sheet1["N{}".format(x)] = "{}".format(float(30)) #片长/时长
+        sheet1["O{}".format(x)] = "{}".format(float(len(xxJ))*5*kkk) #驳回点字数
+        wordnum =  float(30) 
+        sheet1["P{}".format(x)] = "{}".format(wordnum) #一审工作量    
+        sheet1["Q{}".format(x)] = "{}".format(float(wordnum)/3) #复审工作量
+
+
+
+
+# for row in sheet1.iter_rows():
+#     for cell in row:
+#         # 判断单元格是否为文本类型的数字
+#         # if cell.data_type == 's' and cell.value.isdigit():
+#         #     # 将文本类型的数字转换为数字类型
+#         print(cell.value)
+#         cell.value = float(cell.value)
+
+
+wb.save(excel_mty)
+
+
+
+
+# # 这里是将文本类型转数字，因为时长都成文本了
+# import openpyxl
+
+# # 打开Excel文件
+# workbook = openpyxl.load_workbook('工作量.xlsx')
+
+# # 选择第一个工作表
+# sheet = workbook['Sheet1']
+
+# # 遍历所有行
+# for row in sheet.iter_rows():
+#     for cell in row:
+#         # 判断单元格是否为文本类型的数字
+#         if cell.data_type == 's' and cell.value.isdigit():
+#             # 将文本类型的数字转换为数字类型
+#             cell.value = float(cell.value)
+
+# # 保存修改后的Excel文件
+# workbook.save('工作量-1.xlsx')
