@@ -1,0 +1,112 @@
+import io
+import sys
+import csv
+# 改变标准输出的默认编码
+# sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+print_ = print
+def my_print(*args, **kwargs):
+    if 'flush' not in kwargs:
+        kwargs['flush'] = True
+    print_(*args, **kwargs)
+print = my_print
+flush = True
+
+from bs4 import BeautifulSoup    #解析HTML响应
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+import urllib.request
+import urllib.parse
+session = requests.Session()
+import re
+import os
+import time
+import winsound#播放WINDWOS自带的音乐
+#from win32com.client import Dispatch
+#import win32gui,win32api,win32con
+#thunder = Dispatch('ThunderAgent.Agent64.1')
+import sqlite3
+import datetime
+from selenium import webdriver
+import time
+
+import socket
+import re
+#import win32com.client as win
+
+
+
+
+
+
+
+
+location = 'C:/Program Files/Mozilla Firefox/firefox.exe'
+driver = webdriver.Firefox(firefox_binary=location)
+
+driver.get(driver.current_url)
+
+
+JM_yes=r'''
+http://tvcms.video.qq.com/videoaudit/Service/TvPlayer/view_player?vid=v0038ezi0rp&logo=3
+http://tvcms.video.qq.com/videoaudit/Service/TvPlayer/view_player?vid=d00388b9xfc&logo=3
+http://tvcms.video.qq.com/videoaudit/Service/TvPlayer/view_player?vid=d0038ufi987&logo=3
+http://tvcms.video.qq.com/videoaudit/Service/TvPlayer/view_player?vid=k00386dskqn&logo=3
+http://tvcms.video.qq.com/videoaudit/Service/TvPlayer/view_player?vid=r0033fu7v7y&logo=3
+http://tvcms.video.qq.com/videoaudit/Service/TvPlayer/view_player?vid=e0033voerhp&logo=3
+
+'''
+
+
+list1=JM_yes.split()#为空，就是以空格相隔，不管空格有几个
+for key in list1:
+    
+    #print(key)
+    
+    driver.get('{}'.format(key))
+    time.sleep(5)
+    #填充用户名 密码 验证码
+    driver.find_element_by_id("username").send_keys("tvcms_kk")
+    driver.find_element_by_id("pswd").send_keys("123456")
+    time.sleep(1)
+
+    #点击登录 
+    driver.find_element_by_id("btnLogin").click()
+    time.sleep(5)
+
+    # 获取并打印网页的HTML内容
+    # page_source(页面源码)
+    # current_url(页面链接)
+    # text(文本)
+
+
+    #html_content = driver.page_source
+    #html_content = driver.current_url
+    #html_content = driver.text
+    #html_content = driver.get_log('performance')
+
+    #print(html_content)
+
+    # text=driver.page_source
+    #cookie = driver.get_cookies()
+    # print(cookie)
+    #print(cookie[0]['value'])
+
+
+    network = driver.execute_script("return window.performance.getEntries();")
+    for data in network:
+        if data["name"].startswith("http"):
+            line = ".ts.m3u8?"
+            if line in data["name"]:
+                print(data["name"])
+                break
+                
+
+
+
+
+    #driver.quit()
+
+
+
+
