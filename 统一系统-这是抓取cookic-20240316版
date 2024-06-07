@@ -141,7 +141,7 @@ def cookie():
             time.sleep(5)
             #填充用户名 密码 验证码
             driver.find_element_by_id("username").send_keys("huangliang")
-            driver.find_element_by_id("password").send_keys("CNTVott@1525163#")
+            driver.find_element_by_id("password").send_keys("CNTVott@1525163%%")
             time.sleep(5)
             #点击登录 
             driver.find_element_by_name("submit").click()
